@@ -7,13 +7,13 @@ int main()
     scanf("%d",&x);
     int cnt[number];
     for(int i=0;i<number;i++){
-        cnt[i]=0;
+        cnt[i]=0;//初始化为0
     }
     while(x!=-1){
         if(x>=0&&x<=9){
             cnt[x]++;
         }
-         scanf("%d",&x);
+         scanf("%d",&x);//继续读取下一个整数
     }
     for(int i=0;i<number;i++){
         printf("%d出现了%d次\n",i,cnt[i]);
