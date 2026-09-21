@@ -159,6 +159,17 @@
 
 ---
 
+## 动态内存（ch16 practice3 预防）
+
+### 铁律（malloc / realloc / free）
+- malloc 后必须判 `NULL`；大小写 `n * sizeof(类型)`，绝不写 `malloc(n)`。
+- **realloc 永远用临时指针接**：`int* t = realloc(p, newsz); if(!t){free(p);...} else p=t;`——直接 `p=realloc(p,...)` 失败会丢原指针且泄漏。
+- realloc 失败时原 `p` 仍有效，要 `free(p)`；成功时旧块已被自动搬走，只留 `p=t`。
+- `free(p)` 后立刻 `p=NULL`，杜绝野指针；同一指针 `free` 两次是 UB。
+- 输入 n/m 先校验 `n>0`、`m>=0`，防负数转 size_t 爆炸。
+
+---
+
 ## 待补区（之后踩坑往这里加）
 - ch17 链表（了解级）
 - ch18 文件 IO
