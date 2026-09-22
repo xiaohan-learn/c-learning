@@ -170,6 +170,21 @@
 
 ---
 
+## ch17 链表（了解级）
+
+### 15. 节点结构自我包含 struct Node stu  [偶尔忘] ★编译不过
+- 现象：想让节点存学生信息，写成 `typedef struct Node { struct Node stu; struct Node* next; } Node;`，编译报 "field has incomplete type"。
+- 原因：`struct Node stu;` 是「在自己的定义里放一个完整自己」（值成员，不是指针），类型未完成时不能放值，且会无限递归；节点里要放**别的**结构，不能用自身类型名。
+- 正确：先定义数据载体 `typedef struct { int id; int score; } stu;`，再 `typedef struct Node { stu data; struct Node* next; } Node;`（字段名别叫 stu，避免混淆）。
+- 口诀：节点里放「数据」用其他类型；放「下一个节点」才用 `struct Node*`。
+
+### 16. 读入变量与传参不一致  [已掌握]
+- 现象：`scanf("%d",&x); head_insert(&head, id, score);` —— 只读了 x，id/score 根本没读就传进去，值是垃圾。
+- 原因：scanf 的变量和后面用的变量要一一对应；多字段就用 `scanf("%d %d",&id,&score)`。
+- 正确：读几个就传几个，变量名全程一致。
+- 口诀：scanf 读到哪、函数用哪，变量必须同一个。
+
+---
+
 ## 待补区（之后踩坑往这里加）
-- ch17 链表（了解级）
 - ch18 文件 IO
