@@ -186,5 +186,26 @@
 
 ---
 
+## ch18 链表进阶（删除/插入/查找/长度）
+
+### 17. 尾插找尾循环条件写错 p!=NULL  [偶尔忘] ★段错误
+- 现象：tail_insert 里 `while(p!=NULL) p=p->next;` 之后 `p->next=newnode;`，链表非空时直接崩（段错误 / 程序闪退）。
+- 原因：`p` 会一路走到 NULL（越过真正的尾节点），此时 `p` 是空指针，`p->next` 解引用空指针 → 段错误。正确做法是停在「最后一个节点」，即它的 `next` 为 NULL 时停。
+- 正确：
+  ```c
+  Node *p=*head;
+  while(p->next!=NULL) p=p->next;   // 停在尾节点（其 next 才是 NULL）
+  p->next=newnode;                  // 接到尾节点后面
+  ```
+- 口诀：尾插找「尾节点」用 `p->next!=NULL`；用 `p!=NULL` 会把 p 推过尾变成空，再解引用必崩。
+
+### 18. 空表判断写错 if(newnode==NULL)  [已掌握]
+- 现象：tail_insert 开头 `if(newnode==NULL){ *head=newnode; return; }` —— 把"malloc 失败"和"链表为空"混了；且失败时把 head 设成 NULL 毫无意义。
+- 原因：`*head==NULL` 才是"空表首插"的分支；`newnode==NULL` 是"malloc 失败"。两个概念别混。
+- 正确：空表分支用 `if(*head==NULL){ *head=newnode; return; }`；malloc 失败单独 `if(newnode==NULL){ perror(...); return; }`。
+- 口诀：判断"表空"看 head，判断"分配失败"看 newnode。
+
+---
+
 ## 待补区（之后踩坑往这里加）
-- ch18 文件 IO
+- ch19 文件 IO
