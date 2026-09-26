@@ -217,4 +217,22 @@
 - 读循环用 `while(fread(&s,sizeof(s),1,fp)==1)` 控制（**不用 `feof`**，安全不越界）。
 - 二进制文件别用 `fgets/fscanf` 这类文本函数读，混用会乱。
 
+### 20. add() 只填局部变量不入库 [偶尔忘] ★致命
+- 现象：综合项目里 `add()` 填好了局部 `STUDENT s`，但**没写 `stulist[stucount]=s; stucount++;`** —— 函数一返回，s 就销毁，列表始终空，保存也是空文件。
+- 原因：把"填一个临时结构体"和"把它放进全局数组"当成一步，其实漏了最后入库那两行。
+- 正确：`s.status=...; stulist[stucount]=s; stucount++;`（先赋值再存，顺序无所谓，但必须存）。
+- 口诀：填完结构体 → 别忘了 `stulist[stucount++]=s;` 这一句才是"真正添加"。
+
+### 21. input_str 把 sizeof(结构体) 当字段长度传 [已掌握] ★溢出风险
+- 现象：`input_str("姓名:",s.name,sizeof(STUDENT))` —— 第三个参数应是**目标缓冲区大小**，却传了整个结构体大小（~100），而 `s.name` 只有 50 字节。`fgets` 会往 50 字节里写最多 99 字符 → **缓冲区溢出**。
+- 原因：`sizeof(STUDENT)` 是结构体总大小，不是 `s.name` 的大小；调用方要传 `sizeof(s.name)` / `sizeof(s.phone)`。
+- 正确：`input_str("姓名:",s.name,sizeof(s.name));` `input_str("电话:",s.phone,sizeof(s.phone));`。
+- 口诀：fgets 的 len 参数 = 那个**数组自己**的 sizeof，永远别传外层结构体的 sizeof。
+
+### 22. loadfile 里 `fp==NULL;` 误写比较号 [偶尔忘]
+- 现象：关闭文件后写 `fp==NULL;`（双等号），本意是 `fp=NULL;`（单等号赋值）防野指针。
+- 原因：`==` 是判断、`=` 是赋值，手滑写成比较，语句无副作用（fp 仍是已 fclose 的野值，本地变量而已影响小，但习惯错误）。
+- 正确：`fclose(fp); fp=NULL;`。
+- 口诀：置空用单等号；看到 `fp==NULL;` 这种"比较后啥也不做"的语句必是笔误。
+
 ## 待补区（之后踩坑往这里加）
