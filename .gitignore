@@ -18,3 +18,9 @@
 # 系统垃圾文件
 .DS_Store
 Thumbs.db
+
+# C 程序运行产物（请勿提交）
+*.bin
+*.dat
+*.txt
+*.code-workspace
