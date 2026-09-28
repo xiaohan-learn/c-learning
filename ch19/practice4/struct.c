@@ -26,6 +26,7 @@ int main(){
     int ret=fwrite(&s,sizeof(struct Student),1,fp);
     if(ret!=1){
         perror("fwrite error");
+        fclose(fp);
         return 1;
     }
 
@@ -44,6 +45,7 @@ int main(){
     int ret1=fread(&a,sizeof(struct Student),1,rp);
     if(ret1!=1){
         perror("fread error");
+        fclose(rp);
         return 1;
     }
  
