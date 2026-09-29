@@ -100,7 +100,7 @@
 
 ## ch15 枚举与 static
 
-### 9. 函数该返回字符串却直接 printf  [已掌握]
+### 9. 函数该返回字符串却直接 printf  [偶尔忘]
 - 现象：`weekday_name` 函数里直接 `printf` 星期名，调用处却期待返回值。
 - 原因：函数职责要单一；返回字符串就 `return "Mon";`，打印交给调用方。
 - 正确：`const char* weekday_name(int d) { ...; return name; }` 然后 `printf("%s", weekday_name(d));`
@@ -125,7 +125,7 @@
 - 正确：定义时一次写对，或靠编译器报错精确定位。
 - 口诀：枚举值当变量名对待，拼错必报错。
 
-### 12. static / 全局变量空文件未实现  [已掌握]
+### 12. static / 全局变量空文件未实现  [偶尔忘]
 - 现象：practice3/4 交上来是空文件，没验证语义。
 - 原因：`static` 局部变量跨调用保持值、全局变量是外部链接，需要真实代码验证。
 - 正确：
@@ -151,7 +151,7 @@
   ```
 - 口诀：宏是替换不是函数；参数加括号、整体加括号、不传副作用。
 
-### 14. extern 声明散落在使用处  [已掌握]
+### 14. extern 声明散落在使用处  [偶尔忘]
 - 现象：`main.c` 里手写 `extern int g_count;`，能跑，但声明和接口分离在两处。
 - 原因：跨文件共享的变量/函数声明应集中在 `.h` 里，谁 include 谁可见，改一处全局生效。
 - 正确：把 `extern int g_count;` 写进 `calc.h`，`main.c` 只 `#include "calc.h"`。
@@ -178,7 +178,7 @@
 - 正确：先定义数据载体 `typedef struct { int id; int score; } stu;`，再 `typedef struct Node { stu data; struct Node* next; } Node;`（字段名别叫 stu，避免混淆）。
 - 口诀：节点里放「数据」用其他类型；放「下一个节点」才用 `struct Node*`。
 
-### 16. 读入变量与传参不一致  [已掌握]
+### 16. 读入变量与传参不一致  [偶尔忘]
 - 现象：`scanf("%d",&x); head_insert(&head, id, score);` —— 只读了 x，id/score 根本没读就传进去，值是垃圾。
 - 原因：scanf 的变量和后面用的变量要一一对应；多字段就用 `scanf("%d %d",&id,&score)`。
 - 正确：读几个就传几个，变量名全程一致。
@@ -199,7 +199,7 @@
   ```
 - 口诀：尾插找「尾节点」用 `p->next!=NULL`；用 `p!=NULL` 会把 p 推过尾变成空，再解引用必崩。
 
-### 18. 空表判断写错 if(newnode==NULL)  [已掌握]
+### 18. 空表判断写错 if(newnode==NULL)  [偶尔忘]
 - 现象：tail_insert 开头 `if(newnode==NULL){ *head=newnode; return; }` —— 把"malloc 失败"和"链表为空"混了；且失败时把 head 设成 NULL 毫无意义。
 - 原因：`*head==NULL` 才是"空表首插"的分支；`newnode==NULL` 是"malloc 失败"。两个概念别混。
 - 正确：空表分支用 `if(*head==NULL){ *head=newnode; return; }`；malloc 失败单独 `if(newnode==NULL){ perror(...); return; }`。
@@ -223,7 +223,7 @@
 - 正确：`s.status=...; stulist[stucount]=s; stucount++;`（先赋值再存，顺序无所谓，但必须存）。
 - 口诀：填完结构体 → 别忘了 `stulist[stucount++]=s;` 这一句才是"真正添加"。
 
-### 21. input_str 把 sizeof(结构体) 当字段长度传 [已掌握] ★溢出风险
+### 21. input_str 把 sizeof(结构体) 当字段长度传 [偶尔忘] ★溢出风险
 - 现象：`input_str("姓名:",s.name,sizeof(STUDENT))` —— 第三个参数应是**目标缓冲区大小**，却传了整个结构体大小（~100），而 `s.name` 只有 50 字节。`fgets` 会往 50 字节里写最多 99 字符 → **缓冲区溢出**。
 - 原因：`sizeof(STUDENT)` 是结构体总大小，不是 `s.name` 的大小；调用方要传 `sizeof(s.name)` / `sizeof(s.phone)`。
 - 正确：`input_str("姓名:",s.name,sizeof(s.name));` `input_str("电话:",s.phone,sizeof(s.phone));`。
